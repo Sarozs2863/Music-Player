@@ -1,6 +1,6 @@
 <template>
   <div>
-    <keep-alive :exclude="['PlayPage']">
+    <keep-alive :exclude="['PlayPage','SongListDetail']">
       <router-view></router-view>
     </keep-alive>
   </div>
