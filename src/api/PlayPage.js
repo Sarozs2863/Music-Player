@@ -8,3 +8,11 @@ export const getMusicUrl = (id) => {
     }
   })
 }
+
+export const getLyricString = (id) => {
+  return request.get('/lyric', {
+    params: {
+      id
+    }
+  })
+}

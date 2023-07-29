@@ -1,10 +1,7 @@
 <template>
   <div class="song-list-details">
     <!-- 导航 -->
-    <van-nav-bar
-      left-arrow
-      @click-left="$router.go(-1)"
-    />
+    <van-nav-bar left-arrow @click-left="$router.go(-1)" />
     <!-- 歌曲封面 -->
     <div class="cover-container">
       <img class="cover-image" :src="picUrl" alt="歌单封面" />
@@ -12,41 +9,84 @@
 
     <!-- 歌手信息 -->
     <div class="info-container">
-      <h2 style="text-align: center;" class="title">{{songName}}</h2>
+      <h2 style="text-align: center" class="title">{{ songName }}</h2>
       <!-- <p class="description">{{ singer }}</p> -->
-      <p style="text-align: center;" class="created-by">{{singer}}</p>
+      <p style="text-align: center" class="created-by">{{ singer }}</p>
     </div>
 
     <!-- 歌词列表 -->
     <div class="song-list">
+
       <!-- 使用 v-for 遍历歌曲列表 -->
-      <!-- <div v-for="(item, index) in songs" :key="item.id" class="song-item">
-        <div class="song-number" style="color: gray; width: 20px">
-          {{ index + 1 }}
-        </div>
+      <div  class="song-item">
+        <!-- <div class="song-number" style="color: gray; width: 20px">
+          1
+        </div> -->
         <div class="song-info">
-          <h3 class="song-title">{{ item.name }}</h3>
-          <p class="song-artist">{{ item.ar[0].name }}</p>
+          <h3 id="lyricsContainer" class="song-title"></h3>
+          <!-- <p class="song-artist">3</p> -->
         </div>
-      </div> -->
+      </div>
     </div>
-    <audio :src="musicUrl" controls autoplay></audio>
+     <!-- <div id="lyricsContainer" class="lyrics-container">
+      歌词将在这里动态添加
+    </div> -->
+    <audio id="audioPlayer" :src="musicUrl" controls autoplay></audio>
   </div>
 </template>
 
 <script>
-import { getMusicUrl } from '@/api/PlayPage'
+import { getMusicUrl, getLyricString } from '@/api/PlayPage'
 export default {
   name: 'PlayPage',
   data () {
     return {
-      musicUrl: ''
+      musicUrl: '',
+      lyricString: '',
+      lyricData: []
     }
   },
   async created () {
     const res = await getMusicUrl(this.id)
-    console.log(res)
     this.musicUrl = res.data[0].url
+  },
+  async mounted () {
+    // 歌词滚动实现
+    const LyricRes = await getLyricString(this.id)
+    this.lyricString = LyricRes.lrc.lyric
+    // 拆解歌词
+    const lines = this.lyricString.split('\n')
+    const timeRegex = /\[(\d+:\d+\.\d+)\](.*)/
+    for (const line of lines) {
+      const match = line.match(timeRegex)
+      if (match) {
+        const timeData = match[1]
+        const text = match[2].trim()
+        // 把时间戳化为秒数
+        const parts = timeData.split(':')
+        const minutes = parseFloat(parts[0])
+        const seconds = parseFloat(parts[1])
+        const time = minutes * 60 + seconds
+        this.lyricData.push({ time, text })
+      }
+    }
+    console.log(this.lyricData)
+    // Dom操作
+    const audioPlayer = this.$el.querySelector('#audioPlayer')
+    // const lyricsContainer = this.$el.querySelector('#lyricsContainer')
+    // 找到对应的歌词并跟新上去
+    audioPlayer.addEventListener('timeupdate', () => {
+      const currentTime = audioPlayer.currentTime
+      let currentLyric = ''
+      for (let i = 0; i < this.lyricData.length; i++) {
+        if (currentTime >= this.lyricData[i].time && currentTime < this.lyricData[i + 1].time) {
+          currentLyric = this.lyricData[i].text
+          console.log(currentTime)
+          console.log(currentLyric)
+          break
+        }
+      }
+    })
   },
   computed: {
     picUrl () {
@@ -66,8 +106,20 @@ export default {
 </script>
 
 <style scoped>
+.lyrics-container {
+  height: 60px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  text-align: center;
+  line-height: 2;
+}
+
+.lyrics p {
+  margin: 0;
+}
+
 audio {
-    width: 100%;
+  width: 100%;
 }
 /* 页面整体容器样式 */
 .song-list-details {
@@ -137,8 +189,9 @@ audio {
 /* 歌曲信息容器样式 */
 .song-info {
   flex: 1;
-  display: flex;
-  justify-content: space-between;
+  text-align: center;
+  /* display: flex;
+  justify-content: space-between; */
 }
 
 /* 歌曲标题样式 */
