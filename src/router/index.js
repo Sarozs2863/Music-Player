@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import LayOut from '@/views/LayOut/LayOut.vue'
 import HomePage from '@/views/LayOut/HomePage/HomePage.vue'
 import MyPage from '@/views/LayOut/MyPage.vue'
-import SearchPage from '@/views/LayOut/SearchPage.vue'
+import SearchPage from '@/views/LayOut/SearchPage/SearchPage.vue'
 import SongListDetail from '@/views/SongListDetail/SongListDetail.vue'
 import PlayPage from '@/views/PlayPage/PlayPage.vue'
 Vue.use(VueRouter)

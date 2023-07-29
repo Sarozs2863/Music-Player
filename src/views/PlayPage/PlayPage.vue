@@ -78,6 +78,7 @@ export default {
     audioPlayer.addEventListener('timeupdate', () => {
       const currentTime = audioPlayer.currentTime
       let currentLyric = '~'
+      lyricsContainer.innerHTML = '~'
       if (currentTime > this.lyricData[this.lyricData.length - 1].time) {
         lyricsContainer.innerHTML = '~'
       } else {
@@ -193,6 +194,7 @@ audio {
 
 /* 歌曲信息容器样式 */
 .song-info {
+  height: 30px;
   flex: 1;
   text-align: center;
   /* display: flex;

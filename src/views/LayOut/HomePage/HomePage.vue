@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <SearchBar></SearchBar> -->
     <!-- 轮播图 -->
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
       <van-swipe-item v-for="item in songLists2" :key="item.id">
@@ -14,6 +15,7 @@
 </template>
 
 <script>
+// import SearchBar from '../SearchPage/SearchBar.vue'
 import { getSongList } from '@/api/homepage'
 import PartView from './PartView.vue'
 import { showDetail } from '@/utils/showDetail'
@@ -23,6 +25,7 @@ export default {
   mixins: [goToDetail],
   components: {
     PartView
+    // SearchBar
   },
   methods: {
     async getSongLists () {
