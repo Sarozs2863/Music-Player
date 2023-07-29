@@ -23,7 +23,7 @@
           1
         </div> -->
         <div class="song-info">
-          <h3 id="lyricsContainer" class="song-title"></h3>
+          <h3 id="lyricsContainer" class="song-title">歌词尚未加载</h3>
           <!-- <p class="song-artist">3</p> -->
         </div>
       </div>
@@ -70,20 +70,25 @@ export default {
         this.lyricData.push({ time, text })
       }
     }
-    console.log(this.lyricData)
+    // console.log(this.lyricData)
     // Dom操作
     const audioPlayer = this.$el.querySelector('#audioPlayer')
-    // const lyricsContainer = this.$el.querySelector('#lyricsContainer')
+    const lyricsContainer = this.$el.querySelector('#lyricsContainer')
     // 找到对应的歌词并跟新上去
     audioPlayer.addEventListener('timeupdate', () => {
       const currentTime = audioPlayer.currentTime
-      let currentLyric = ''
-      for (let i = 0; i < this.lyricData.length; i++) {
-        if (currentTime >= this.lyricData[i].time && currentTime < this.lyricData[i + 1].time) {
-          currentLyric = this.lyricData[i].text
-          console.log(currentTime)
-          console.log(currentLyric)
-          break
+      let currentLyric = '~'
+      if (currentTime > this.lyricData[this.lyricData.length - 1].time) {
+        lyricsContainer.innerHTML = '~'
+      } else {
+        for (let i = 0; i < this.lyricData.length; i++) {
+          if (currentTime >= this.lyricData[i].time && currentTime < this.lyricData[i + 1].time) {
+            currentLyric = this.lyricData[i].text
+            // console.log(currentTime)
+            // console.log(currentLyric)
+            lyricsContainer.innerHTML = currentLyric
+            break
+          }
         }
       }
     })

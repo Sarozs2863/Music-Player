@@ -10,9 +10,14 @@ import {
   Swipe,
   SwipeItem,
   Lazyload,
-  NavBar
+  NavBar,
+  Loading,
+  Toast
 } from 'vant'
 
+Vue.use(Toast)
+
+Vue.use(Loading)
 Vue.use(NavBar)
 Vue.use(Lazyload)
 Vue.use(Swipe)
